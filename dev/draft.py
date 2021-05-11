@@ -113,7 +113,7 @@ class RelEnc(nn.Module):
         self.encoder = encoder
         self.relation_head = relation_head
 
-    def train(self, epochs, k, m, train_loader, log_file="train_session.json", nb_records=100):
+    def train(self, epochs, k, m, train_loader, log_file="train_session.json", nb_records=100, verbose=False):
         log = dict()
         log["epochs"] = epochs
         optimizer = torch.optim.Adam([
@@ -132,7 +132,8 @@ class RelEnc(nn.Module):
         for E in range(epochs):
             sum_loss = 0.0
             log["loss"][E] = []
-            print("epoch", E)
+            if verbose:
+                print("epoch", E)
             for i, (data_augmented,_) in enumerate(train_loader):
                 K = len(data_augmented)
                 x = torch.cat(data_augmented, 0)
@@ -149,10 +150,9 @@ class RelEnc(nn.Module):
                 nb_batches = len(train_loader.dataset) // k^2
                 if ((i % (nb_batches // nb_records)) == 0):
                     log["loss"][E].append(loss.detach().item())
-                    print(int(100 * i / nb_batches), i, loss.detach().item())
+                    if verbose:
+                        print(int(100 * i / nb_batches), i, loss.detach().item())
             avg_loss += sum_loss / (epochs * nb_batches)
             sum_loss = 0
         log["loss"]["average"] = avg_loss.item()
-        with open(log_file, 'w') as json_file:
-            json.dump(log, json_file)
-        return log_file
+        return log
