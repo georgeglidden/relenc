@@ -1,7 +1,7 @@
 # The Relational Encoder Architecture
 
 ## Overview
-Introduced in [1], the _Relational Encoder_ is a machine learning model and training paradigm which cultivates a meaningful feature-space representation of a dataset by optimizing a bipartite architecture. The _encoder_ network can be any trainable model associating inputs with output vectors in a feature space, e.g., several convolutional layers appended with a multilayer perceptron. Given an encoder with well-defined output dimensions, the _relation head_ is a secondary MLP which assigns a _similarity score_, between 0 and 1, to any pair of feature vectors.
+Introduced in [1], the _Relational Encoder_ is a machine learning model and training paradigm which cultivates a meaningful feature-space representation of a dataset by optimizing a bipartite architecture. The _encoder_ network can be any trainable model associating inputs with output vectors in a feature space, e.g., several convolutional layers appended with a multilayer perceptron. Given an encoder with well-defined output dimensions, the _relation head_ is a secondary network which assigns a _similarity score_, between 0 and 1, to pairs of feature vectors.
 
 The significance of the relational encoder training scheme lies in its _unsupervised_ implementation. The encoder learns a generalized version of the data, and the resulting feature space reflects the implicit structure of the dataset. No external biases need be introduced, nor are any significant preprocessing steps required. Furthermore, the relation head serves as an informed comparison operator, regardless of dimensionality or quality of the input, and is capable of enhancing a variety of algorithms which consider pairwise similarities in data.
 
@@ -12,7 +12,7 @@ The `relator` assigns similarity scores to each pair, and the binary crossentrop
 
 Clearly, the autolabeling scheme is not perfect. Given sufficiently many batches or a sufficiently small number of true classes in the data, false negatives will be generated. However, the distribution  of these errors is uniform, their density is low, and so their effect on training is negligible\*, and empirical results show that convergence does occur.
 
-\* Every aggregate batch represents `m` classes. Every class has multiple positive pairs in the aggregation. So, even if false negatives for that class appear, the effect on the batch gradient will be analogous to reducing the batch size by the number of false negatives. No chaos is introduced to the training dynamics.
+\* Every batch has a large number of positive pairs in its aggregation. So, even if false negatives appear, the effect on the batch gradient will be analogous to reducing the batch size by the number of false negatives. No chaos is introduced to the training dynamics.
 
 ## Example
 Relational Encoder examples, implementated in Tensorflow and Pytorch, are provided in the `/examples` subdirectory.

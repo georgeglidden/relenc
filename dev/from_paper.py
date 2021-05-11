@@ -27,7 +27,7 @@ color_jitter = transforms.ColorJitter(brightness=0.8, contrast=0.8,
 rnd_color_jitter = transforms.RandomApply([color_jitter], p=0.8)
 rnd_gray = transforms.RandomGrayscale(p=0.2)
 rnd_rcrop = transforms.RandomResizedCrop(size=32, scale=(0.08, 1.0),
-    interpolation=2)
+    interpolation=transforms.InterpolationMode.BILINEAR)
 rnd_hflip = transforms.RandomHorizontalFlip(p=0.5)
 train_transform = transforms.Compose([rnd_rcrop, rnd_hflip, rnd_color_jitter,
     rnd_gray, transforms.ToTensor(), normalize])
