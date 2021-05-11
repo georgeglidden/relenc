@@ -50,7 +50,7 @@ def send_email(acc, rec, text, attachments=[]):
         sess.sendmail(snd,rec,msg.as_string())
         print('message sent')
 
-def job(epochs, minibatch_size, nb_augments, from_job):
+def job(epochs, minibatch_size, nb_augments, enc_path = None, rel_path = None, rel_class = 0):
     global JOB_ID, RECORD_DEST, NOTIFY
     # init data, data loader, and models
     cifar10 = dev.MultiCIFAR10(nb_augments,
@@ -61,14 +61,19 @@ def job(epochs, minibatch_size, nb_augments, from_job):
     train_loader = dev.DataLoader(cifar10,
         batch_size = minibatch_size,
         shuffle=True)
-    if from_job is not None:
-        enc = load_models.load_encoder(from_job)
-        rel = load_models.load_relation_head(from_job)
-        relenc = dev.RelationalEncoder(encoder=enc, relation_head=rel)
+    enc = None
+    rel = None
+    if enc_path is not None:
+        enc = load_models.load_encoder(enc_path)
         if NOTIFY:
-            print("loaded models from: ", from_job)
+            print("loaded encoder from", enc_path)
+    if rel_path is not None:
+        rel = load_models.load_relation_head(rel_path, rel_class)
+        if NOTIFY:
+            print("loaded relation head from", rel_path)
     else:
-        relenc = dev.RelationalEncoder()
+        rel = dev.relation_head(rel_class)()
+    relenc = dev.RelationalEncoder(encoder=enc,relation_head=rel)
     # train and unpack models
     record = relenc.train(epochs, minibatch_size, nb_augments, train_loader, verbose=NOTIFY)
     enc = relenc.encoder
@@ -91,6 +96,7 @@ def main():
     epochs = int(sys.argv[1])
     m = int(sys.argv[2])
     k = int(sys.argv[3])
+    rel = int(sys.argv[4])
     if '-n' in sys.argv:
         i = sys.argv.index('-n')
         NOTIFY = True
@@ -103,22 +109,27 @@ def main():
     if '-d' in sys.argv:
         i = sys.argv.index('-d')
         RECORD_DEST = sys.argv[i+1]
-    if '-j' in sys.argv:
-        i = sys.argv.index('-j')
-        from_job = sys.argv[i+1]
+    if '-enc' in sys.argv:
+        i = sys.argv.index('-enc')
+        enc_path = sys.argv[i+1]
     else:
-        from_job = None
+        enc_path = None
+    if '-rel' in sys.argv:
+        i = sys.argv.index('-rel')
+        rel_path = sys.argv[i+1]
+    else:
+        rel_path = None
     # job start
     if NOTIFY:
-        text = f"job started\nparams: {epochs} {m} {k}\ndevice: {dev.device}"
+        text = f"job started\nparams: {epochs} {m} {k} {rel} \ndevice: {dev.device}"
         try:
             send_email(src_acc, rec_adr, text)
         except:
             print(text)
-    result = job(epochs, m, k, from_job)
+    result = job(epochs, m, k, enc_path, rel_path, rel_class = rel)
     # job end
     if NOTIFY:
-        text = f"job complete\nparams: {epochs} {m} {k}"
+        text = f"job complete\nparams: {epochs} {m} {k} {rel}"
         try:
             send_email(src_acc, rec_adr, text, attachments = result)
         except:

@@ -71,11 +71,113 @@ class RelationHead(nn.Module):
             nn.BatchNorm1d(256),
             nn.LeakyReLU()
         )
-        self.layer2 = nn.Linear(256, 1)
+        self.out = nn.Linear(256, 1)
+
+    def forward(self, x):
+        h = self.layer1(x)
+        h = self.out(h)
+        return h
+
+class RelationHead2(nn.Module):
+    def __init__(self, feature_size=64):
+        super(RelationHead2, self).__init__()
+        input_size = feature_size * 2
+        self.layer1 = nn.Sequential(
+            nn.Linear(input_size, 256),
+            nn.BatchNorm1d(256),
+            nn.LeakyReLU()
+        )
+        self.layer2 = nn.Sequential(
+            nn.Linear(256, 128),
+            nn.BatchNorm1d(128),
+            nn.LeakyReLU()
+        )
+        self.out = nn.Linear(128, 1)
 
     def forward(self, x):
         h = self.layer1(x)
         h = self.layer2(h)
+        h = self.out(h)
+        return h
+
+class RelationHead3(nn.Module):
+    def __init__(self, feature_size=64):
+        super(RelationHead3, self).__init__()
+        input_size = feature_size * 2
+        self.layer1 = nn.Sequential(
+            nn.Linear(input_size, 256),
+            nn.BatchNorm1d(256),
+            nn.LeakyReLU()
+        )
+        self.layer2 = nn.Sequential(
+            nn.Linear(256, 128),
+            nn.BatchNorm1d(128),
+            nn.LeakyReLU()
+        )
+        self.layer3 = nn.Sequential(
+            nn.Linear(128, 64),
+            nn.BatchNorm1d(64),
+            nn.LeakyReLU()
+        )
+        self.out = nn.Linear(64, 1)
+
+    def forward(self, x):
+        h = self.layer1(x)
+        h = self.layer2(h)
+        h = self.layer3(h)
+        h = self.out(h)
+        return h
+
+class RelationHeadLong(nn.Module):
+    def __init__(self, feature_size=64):
+        super(RelationHeadLong, self).__init__()
+        input_size = feature_size * 2
+        self.layer1 = nn.Sequential(
+            nn.Linear(input_size, 256),
+            nn.BatchNorm1d(256),
+            nn.LeakyReLU()
+        )
+        self.layer2 = nn.Sequential(
+            nn.Linear(256, 256),
+            nn.BatchNorm1d(256),
+            nn.LeakyReLU()
+        )
+        self.layer3 = nn.Sequential(
+            nn.Linear(256, 64),
+            nn.BatchNorm1d(64),
+            nn.LeakyReLU()
+        )
+        self.layer4 = nn.Sequential(
+            nn.Linear(64, 64),
+            nn.BatchNorm1d(64),
+            nn.LeakyReLU()
+        )
+        self.layer5 = nn.Sequential(
+            nn.Linear(64, 16),
+            nn.BatchNorm1d(16),
+            nn.LeakyReLU()
+        )
+        self.layer6 = nn.Sequential(
+            nn.Linear(16, 16),
+            nn.BatchNorm1d(16),
+            nn.LeakyReLU()
+        )
+        self.layer7 = nn.Sequential(
+            nn.Linear(16, 4),
+            nn.BatchNorm1d(4),
+            nn.LeakyReLU()
+        )
+        self.out = nn.Linear(4, 1)
+
+    def forward(self, x):
+        h = self.layer1(x)
+        h = self.layer2(h)
+        h = self.layer3(h)
+        h = self.layer4(h)
+        h = self.layer5(h)
+        h = self.layer6(h)
+        h = self.layer7(h)
+        h = self.out(h)
         return h
 
 def aggregate(features, K):
@@ -107,8 +209,9 @@ def aggregate(features, K):
 class RelEnc(nn.Module):
     def __init__(self, encoder = None, relation_head = None, feature_size=64):
         super(RelEnc, self).__init__()
-        if encoder == relation_head == None:
+        if encoder == None:
             encoder = Encoder(feature_size=feature_size)
+        if relation_head == None:
             relation_head = RelationHead(feature_size=feature_size)
         self.encoder = encoder
         self.relation_head = relation_head
