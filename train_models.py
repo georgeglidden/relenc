@@ -76,7 +76,7 @@ def job(epochs, minibatch_size, nb_augments, enc_path = None, rel_path = None, r
         rel = dev.relation_head(rel_class)()
     relenc = dev.RelationalEncoder(encoder=enc,relation_head=rel)
     # train and unpack models
-    record = dict()#relenc.train(epochs, minibatch_size, nb_augments, train_loader, verbose=NOTIFY)
+    record = relenc.train(epochs, minibatch_size, nb_augments, train_loader, verbose=NOTIFY)
     enc = relenc.encoder
     rel = relenc.relation_head
     # output results
