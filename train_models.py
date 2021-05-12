@@ -27,7 +27,7 @@ def send_email(acc, rec, text, attachments=[]):
     msg = MIMEMultipart()
     msg["From"] = snd
     msg["To"] = rec
-    msg["Subject"] = f"job{JOB_ID}..."
+    msg["Subject"] = f"job{JOB_ID}"
     # load and attach paths from attachments
     if attachments is not None:
         for att_path in attachments:
@@ -36,8 +36,9 @@ def send_email(acc, rec, text, attachments=[]):
             with open(att_path,'rb') as att_bytes:
                 att.set_payload(att_bytes.read())
             encoders.encode_base64(att)
+            att_filename = att_path[att_path.rfind('/')+1:]
             att.add_header("Content-Disposition",
-                "attachment; filename= "+att_path)
+                "attachment; filename= "+att_filename)
             msg.attach(att)
     # appendix, for now just system time.
     msg.attach(MIMEText(text + f"\n\nsystem time: {time.time()}"))
@@ -75,7 +76,7 @@ def job(epochs, minibatch_size, nb_augments, enc_path = None, rel_path = None, r
         rel = dev.relation_head(rel_class)()
     relenc = dev.RelationalEncoder(encoder=enc,relation_head=rel)
     # train and unpack models
-    record = relenc.train(epochs, minibatch_size, nb_augments, train_loader, verbose=NOTIFY)
+    record = dict()#relenc.train(epochs, minibatch_size, nb_augments, train_loader, verbose=NOTIFY)
     enc = relenc.encoder
     rel = relenc.relation_head
     # output results
