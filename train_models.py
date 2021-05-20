@@ -20,9 +20,9 @@ NOTIFY = False # relates to a condition in one of 3 states:
 # if True with email params, the script will (in addition to above) send an email from a gmail account upon job start + end, the latter containing the results.
 # if True without email params, the script will (in addition to above) print start, end, and results to the standard output.
 
-def send_email(acc, rec, text, attachments=[]):
+def send_email(acc, rcvr, text, attachments=[]):
     global PORT, JOB_ID
-    snd,pw = acc
+    sndr,pw = acc
     # build email content
     msg = MIMEMultipart()
     msg["From"] = snd
@@ -46,9 +46,9 @@ def send_email(acc, rec, text, attachments=[]):
     with smtplib.SMTP('smtp.gmail.com', PORT) as sess:
         sess.starttls()
         print('tls started')
-        sess.login(snd,pw)
+        sess.login(sndr,pw)
         print('login successful')
-        sess.sendmail(snd,rec,msg.as_string())
+        sess.sendmail(sndr,rcvr,msg.as_string())
         print('message sent')
 
 def job(epochs, minibatch_size, nb_augments, enc_path = None, rel_path = None, rel_class = 0):
