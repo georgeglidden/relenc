@@ -25,8 +25,8 @@ def send_email(acc, rcvr, text, attachments=[]):
     sndr,pw = acc
     # build email content
     msg = MIMEMultipart()
-    msg["From"] = snd
-    msg["To"] = rec
+    msg["From"] = sndr
+    msg["To"] = rcvr
     msg["Subject"] = f"job{JOB_ID}"
     # load and attach paths from attachments
     if attachments is not None:
@@ -124,16 +124,20 @@ def main():
     if NOTIFY:
         text = f"job started\nparams: {epochs} {m} {k} {rel} \ndevice: {dev.device}"
         try:
+            print("attempting email")
             send_email(src_acc, rec_adr, text)
-        except:
+        except e:
+            print(e)
             print(text)
     result = job(epochs, m, k, enc_path, rel_path, rel_class = rel)
     # job end
     if NOTIFY:
         text = f"job complete\nparams: {epochs} {m} {k} {rel}"
         try:
+            print("attempting email")
             send_email(src_acc, rec_adr, text, attachments = result)
-        except:
+        except e:
+            print(e)
             print(text)
             print(result)
 
