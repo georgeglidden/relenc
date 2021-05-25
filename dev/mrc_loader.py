@@ -108,7 +108,7 @@ class MRCData(IterableDataset):
         try:
             self._refresh_sampler()
         except StopIteration:
-            for sampler in mrc_samplers:
+            for sampler in self.mrc_samplers:
                 sampler.close()
             raise StopIteration
         # get a randomly-sampled tile from the image
