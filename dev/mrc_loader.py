@@ -4,11 +4,12 @@ import time
 import glob
 from random import shuffle, randint
 
-from numpy import sum,mean
 import mrcfile
+from numpy import sum,mean
 from PIL import Image
 from skimage.exposure import equalize_adapthist as clahe
 from skimage.transform import rescale
+from torch.utils.data import IterableDataset
 import torch
 
 class MRCSampler:
@@ -68,7 +69,7 @@ class MRCSampler:
         return f
 
 
-class MRCData(torch.utils.data.IterableDataset):
+class MRCData(IterableDataset):
     def __init__(self, source_dir, sampler_factory,
             transform=None, K=1, shuffled=False, verbose=False):
         super(MRCData, self).__init__()
