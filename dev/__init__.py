@@ -1,4 +1,4 @@
-from .draft import RelEnc as RelationalEncoder, Encoder, RelationHead, RelationHead2, RelationHead3, RelationHeadLong, aggregate
+from .draft import RelEnc as RelationalEncoder, Encoder, RelationHead, RelationHead2, RelationHead3, RelationHeadLong, RelationHeadCone, aggregate
 from .from_paper import MultiCIFAR10, train_transform
 from .datasets import MRCData,MRCSampler
 from torch.utils.data import DataLoader
