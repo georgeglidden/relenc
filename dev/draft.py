@@ -78,6 +78,30 @@ class RelationHead(nn.Module):
         h = self.out(h)
         return h
 
+class RelationHeadCone(nn.Module):
+    def __init__(self, feature_size=64):
+        super(RelationHead, self).__init__()
+        input_size = feature_size * 2
+        # build layers
+        i = 1
+        self.layers = []
+        while input_size // (2 ** i) > 1:
+            self.layers.append(nn.Sequential(
+                nn.Linear(input_size // (2 ** (i-1)), input_size // (2 ** i)),
+                nn.BatchNorm1d(input_size // (2 ** i)),
+                nn.LeakyReLU()
+            ))
+            i += 1
+        # map to similarity score
+        self.out = nn.Sequential(
+            nn.Linear(input_size // (2 ** (i-1)), 1)
+        )
+
+    def forward(self, x):
+        for L in self.layers:
+            x = L(x)
+        return self.out(x)
+
 class RelationHead2(nn.Module):
     def __init__(self, feature_size=64):
         super(RelationHead2, self).__init__()

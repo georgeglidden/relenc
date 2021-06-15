@@ -17,8 +17,8 @@ JOB_ID = str(hash(random.uniform(0,1))) # a (probably) unique id
 RECORD_DEST = "" # parent directory in which a folder "job{JOB_ID}" is created, which stores the job records.
 NOTIFY = False # relates to a condition in one of 3 states:
 # if False, this script only outputs encoder weights, relation head weights, and the session record.
-# if True with email params, the script will (in addition to above) send an email from a gmail account upon job start + end, the latter containing the results.
 # if True without email params, the script will (in addition to above) print start, end, and results to the standard output.
+# if True with email params, the script will (in addition to above) send an email from a gmail account upon job start + end, the latter containing the results.
 
 def send_email(acc, rcvr, text, attachments=[]):
     global PORT, JOB_ID
@@ -76,7 +76,7 @@ def job(epochs, minibatch_size, nb_augments, enc_path = None, rel_path = None, r
         rel = dev.relation_head(rel_class)()
     relenc = dev.RelationalEncoder(encoder=enc,relation_head=rel)
     # train and unpack models
-    record = relenc.train(epochs, minibatch_size, nb_augments, train_loader, verbose=NOTIFY)
+    record = relenc.train(epochs, nb_augments, minibatch_size, train_loader, verbose=NOTIFY)
     enc = relenc.encoder
     rel = relenc.relation_head
     # output results

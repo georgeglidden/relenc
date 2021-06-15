@@ -9,6 +9,7 @@ class MultiCIFAR10(torchvision.datasets.CIFAR10):
 
     def __getitem__(self, index):
         img, target = self.data[index], self.targets[index]
+        #print(img.shape)
         pic = Image.fromarray(img)
         img_list = list()
         if self.transform is not None:
