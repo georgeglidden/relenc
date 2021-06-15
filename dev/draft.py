@@ -80,7 +80,7 @@ class RelationHead(nn.Module):
 
 class RelationHeadCone(nn.Module):
     def __init__(self, feature_size=64):
-        super(RelationHead, self).__init__()
+        super(RelationHeadCone, self).__init__()
         input_size = feature_size * 2
         # build layers
         i = 1

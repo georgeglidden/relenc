@@ -166,7 +166,7 @@ class MRCData(IterableDataset):
         self._loc = 0 # file to sample from
         self._refresh_sampler()
         if torch.utils.data.get_worker_info() is not None:
-            raise NotImplemented("per Multiprocessing Best Processes\nhttps://pytorch.org/docs/stable/notes/multiprocessing.html")
+            raise NotImplemented("per Multiprocessing Best Practices\nhttps://pytorch.org/docs/stable/notes/multiprocessing.html")
         return self
 
 def main():
